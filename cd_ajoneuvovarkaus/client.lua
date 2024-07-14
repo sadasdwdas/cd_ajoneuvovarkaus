@@ -35,7 +35,7 @@ Citizen.CreateThread(function()
             if isNpc(driverPed) then
                 local data = exports['cd_dispatch']:GetPlayerInfo()
                 notifyPolice(data)
-                Citizen.Wait(60000)  -- Estet‰‰n toistuvat ilmoitukset minuutin ajan
+                Citizen.Wait(60000) 
             end
         end
     end
