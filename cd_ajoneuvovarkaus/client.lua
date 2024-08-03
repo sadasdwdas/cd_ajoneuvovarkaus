@@ -2,12 +2,18 @@ local function isNpc(ped)
     return DoesEntityExist(ped) and not IsPedAPlayer(ped)
 end
 
-local function notifyPolice(data)
+local function getVehiclePlate(vehicle)
+    return GetVehicleNumberPlateText(vehicle)
+end
+
+local function notifyPolice(data, vehicle)
+    local vehiclePlate = getVehiclePlate(vehicle)
+    
     TriggerServerEvent('cd_dispatch:AddNotification', {
         job_table = {'police'}, 
         coords = data.coords,
         title = 'Ajoneuvovarkaus',
-        message = ''..data.sex..' varastaa ajoneuvoa kohteessa: '..data.street, 
+        message = ''..data.sex..' varastaa ajoneuvoa kohteessa: '..data.street..'. Rekisterinumero: '..vehiclePlate, 
         flash = 0,
         unique_id = data.unique_id,
         sound = 1,
@@ -23,7 +29,6 @@ local function notifyPolice(data)
     })
 end
 
-
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -34,8 +39,8 @@ Citizen.CreateThread(function()
             
             if isNpc(driverPed) then
                 local data = exports['cd_dispatch']:GetPlayerInfo()
-                notifyPolice(data)
-                Citizen.Wait(60000) 
+                notifyPolice(data, vehicle)
+                Citizen.Wait(60000)  -- Estet n toistuvat ilmoitukset minuutin ajan
             end
         end
     end
